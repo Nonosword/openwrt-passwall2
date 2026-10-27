@@ -1,0 +1,17 @@
+name: Core update preflight regressions
+on:
+  pull_request:
+    paths: ['luci-app-passwall2/luasrc/passwall2/api.lua', 'tests/core-update.lua', '.github/workflows/core-update-tests.yml']
+  push:
+    paths: ['luci-app-passwall2/luasrc/passwall2/api.lua', 'tests/core-update.lua', '.github/workflows/core-update-tests.yml']
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: sudo apt-get update && sudo apt-get install -y lua5.1
+      - run: |
+          luac5.1 -p luci-app-passwall2/luasrc/passwall2/api.lua
+          lua5.1 tests/core-update.lua
