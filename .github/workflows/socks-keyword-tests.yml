@@ -1,0 +1,26 @@
+name: SOCKS keyword regressions
+on:
+  pull_request:
+    paths:
+      - 'luci-app-passwall2/luasrc/controller/passwall2.lua'
+      - 'luci-app-passwall2/luasrc/view/passwall2/socks_auto_switch/btn.htm'
+      - 'tests/socks-keywords.*'
+      - '.github/workflows/socks-keyword-tests.yml'
+  push:
+    paths:
+      - 'luci-app-passwall2/luasrc/controller/passwall2.lua'
+      - 'luci-app-passwall2/luasrc/view/passwall2/socks_auto_switch/btn.htm'
+      - 'tests/socks-keywords.*'
+      - '.github/workflows/socks-keyword-tests.yml'
+permissions:
+  contents: read
+jobs:
+  keywords:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: sudo apt-get update && sudo apt-get install -y lua5.1
+      - run: |
+          luac5.1 -p luci-app-passwall2/luasrc/controller/passwall2.lua
+          lua5.1 tests/socks-keywords.lua
+          node tests/socks-keywords.cjs
